@@ -1,7 +1,7 @@
 # Быстрый старт
 
 ## Что уже есть ✅
-- CUDA Toolkit 12.6 установлен
+- CUDA Toolkit установлен
 - nvcc доступен
 
 ## Что нужно проверить
@@ -26,12 +26,23 @@ gcc --version
 #### Вариант B: Visual Studio
 1. Скачайте Visual Studio Community (бесплатно)
 2. При установке выберите "Desktop development with C++"
-3. Используйте "Developer Command Prompt for VS"
+3. Используйте скрипт `build_custom.bat`
 
 ## Компиляция
 
 ### Самый простой способ:
 
+**С Visual Studio:**
+```powershell
+.\build_custom.bat
+```
+
+**Без Visual Studio (только nvcc):**
+```powershell
+.\build_one_line.bat
+```
+
+**Автоматический выбор:**
 ```powershell
 .\build.bat
 ```
@@ -39,26 +50,52 @@ gcc --version
 ### Или вручную (если gcc установлен):
 
 ```powershell
-# Компиляция
-gcc -Wall -O2 -std=c11 -c transpose_cpu.c -o transpose_cpu.o
-gcc -Wall -O2 -std=c11 -c utils.c -o utils.o
-nvcc -O2 -arch=sm_86 -std=c++11 -c transpose_cuda.cu -o transpose_cuda.o
-nvcc -O2 -arch=sm_86 -std=c++11 -x cu -c main.c -o main.o -I. -D__CUDACC__
-nvcc -O2 -arch=sm_86 -std=c++11 -o transpose.exe transpose_cpu.o utils.o transpose_cuda.o main.o -lcudart
+# Однострочная команда
+nvcc -O3 -arch=sm_86 -Xcompiler "/MD /wd4819" -lcudart main.c utils.c transpose_cpu.c transpose_cuda.cu device_info.cu -o lab3_transpose.exe
 ```
 
 ## Запуск
 
 ```powershell
-.\transpose.exe
+.\lab3_transpose.exe
 ```
+
+Программа автоматически:
+- Проверит доступность CUDA
+- Выполнит тесты для квадратных и неквадратных матриц
+- Сохранит результаты в `results.csv`
+- Выведет таблицу с результатами
+
+## Построение графиков
+
+```powershell
+python plot_results.py
+```
+
+Создаст файл `transpose_plot.png` с графиками производительности.
 
 ## Важно!
 
-Ваша видеокарта RTX 3050 имеет архитектуру **sm_86**, которая уже указана в Makefile.
+Ваша видеокарта RTX 3050 имеет архитектуру **sm_86**, которая используется в скриптах сборки.
 
 Если возникнут ошибки компиляции, проверьте:
 1. CUDA в PATH
 2. Компилятор C установлен
 3. Архитектура GPU правильная (sm_86 для RTX 3050)
 
+## Что тестируется
+
+**Квадратные матрицы:**
+- 256×256, 512×512, 1024×1024, 2048×2048, 4096×4096, 8192×8192
+
+**Неквадратные матрицы:**
+- 256×512, 512×256
+- 1024×2048, 2048×1024
+- 512×1024, 1024×512
+
+## Результаты
+
+После выполнения программы:
+- Консольный вывод с таблицей результатов
+- Файл `results.csv` с детальными данными
+- Возможность построить графики через `plot_results.py`
