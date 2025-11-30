@@ -123,8 +123,6 @@ Rows x Cols | CPU (мс) | GPU naive (мс) | GPU shared (мс) | Ускорен
 
 - `COMPILE_GUIDE.md` - подробное руководство по компиляции
 - `QUICK_START.md` - быстрый старт
-- `REPORT_GUIDE.md` - руководство по написанию отчета
-- `REPORT_QUICK_REFERENCE.md` - быстрая справка для отчета
 - `ALGORITHM_ILLUSTRATIONS.md` - визуальные иллюстрации алгоритмов
 - `CHANGES.md` - история изменений
 
